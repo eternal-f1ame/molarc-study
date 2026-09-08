@@ -43,8 +43,9 @@ h2{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;le
 .pairs>div{min-width:0;container-type:inline-size}
 .toolbar{position:sticky;bottom:0;z-index:5;background:var(--panel);border-top:1px solid var(--line);margin:12px calc(-1 * var(--pad)) calc(-14px);padding:8px var(--pad) max(10px, env(safe-area-inset-bottom))}
 .pal{display:flex;flex-direction:column;gap:6px;margin:8px 0}
-.palgroup{display:flex;gap:6px;align-items:center;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;padding-bottom:2px}
-.palgroup h3{margin:0;flex:0 0 auto;min-width:64px;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.palgroup{display:grid;grid-template-columns:64px minmax(0,1fr);gap:6px;align-items:start}
+.palgroup h3{margin:0;padding-top:10px;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;line-height:1.2}
+.chips{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;padding-bottom:2px}
 .chip{flex:0 0 auto;display:flex;align-items:center;gap:6px;min-height:36px;padding:4px 10px 4px 5px;border:1px solid var(--line);border-radius:6px;background:var(--panel);font-size:14px;cursor:pointer}
 .chip .sw{width:20px;height:20px;border-radius:4px;border:1px solid rgba(0,0,0,.15)}
 .chip.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
@@ -77,8 +78,9 @@ h2{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;le
   .pairs>div{container-type:normal}
   .grid.big{--cell:clamp(16px, calc((100cqw - 24px) / 20), 30px)}
   .toolbar{position:static;margin:12px 0 0;padding:0;border-top:0;background:transparent}
-  .palgroup{flex-wrap:wrap;overflow:visible}
-  .palgroup h3{min-width:120px;font-size:11px}
+  .palgroup{grid-template-columns:120px minmax(0,1fr)}
+  .palgroup h3{font-size:11px;padding-top:8px}
+  .chips{flex-wrap:wrap;overflow:visible}
   .chip{min-height:32px;font-size:13px}
   .desk{display:inline}
   .sheet .pairwrap{grid-template-columns:1fr 1fr}
@@ -209,12 +211,13 @@ function renderPalette(){
   GROUPS.forEach(({name, tokens}) => {
     const row = document.createElement("div"); row.className = "palgroup";
     const h = document.createElement("h3"); h.textContent = name; row.appendChild(h);
+    const chips = document.createElement("div"); chips.className = "chips"; row.appendChild(chips);
     tokens.forEach(token => {
       const l = DATA.legend[token]; if (!l) return;
       const chip = document.createElement("button"); chip.type = "button"; chip.className = "chip"; chip.dataset.token = token;
       chip.innerHTML = `<span class="sw" style="background:${l.color}"></span><span class="n">${token}</span><span class="nm">${l.name}</span>`;
       chip.addEventListener("click", () => armToken(token));
-      row.appendChild(chip);
+      chips.appendChild(chip);
     });
     pal.appendChild(row);
   });

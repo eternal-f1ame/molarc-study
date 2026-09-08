@@ -11,7 +11,7 @@ header h1{font-size:17px;font-weight:600;margin:0;letter-spacing:.01em}
 header .meta{color:var(--muted);font-variant-numeric:tabular-nums;display:flex;gap:18px;margin-left:auto;font-size:14px}
 main{max-width:1240px;margin:0 auto;padding:20px 24px 60px}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px 20px}
-.intro{max-width:66ch}
+.intro p{max-width:none}
 .intro p{margin:0 0 10px}
 label{display:block;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px}
 input[type=text],select{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);min-width:260px}
@@ -56,7 +56,7 @@ h2{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;le
 <main>
   <section id="screen-register" class="card intro">
     <p><strong>What this is.</strong> A set of grid puzzles built from real molecules. Every puzzle shows two or three demonstration pairs (an input grid and its output grid) that follow one hidden rule, then a test input. Your job: work out the rule from the demonstrations and fill in the output grid for the test input.</p>
-    <p><strong>The grids.</strong> A grid is 10 × 10. A molecule with <em>n</em> atoms occupies rows and columns 0 to <em>n</em>−1: atom tokens on the diagonal, bond tokens off the diagonal (symmetric), an end marker (token 1) on row <em>n</em> and column <em>n</em>, zeros elsewhere. Bonds are single (12), double (13) or triple (14). Hydrogens are not drawn. The legend under the editor names every token.</p>
+    <p><strong>The grids.</strong> A grid is 10 × 10. A molecule with <em>n</em> atoms occupies rows and columns 0 to <em>n</em>-1: atom tokens on the diagonal, bond tokens off the diagonal (symmetric), an end marker (token 1) on row <em>n</em> and column <em>n</em>, zeros elsewhere. Bonds are single (12), double (13) or triple (14). Hydrogens are not drawn. The legend under the editor names every token.</p>
     <p><strong>The rules of the game.</strong> You get two attempts per puzzle. After the first attempt the page tells you whether it matches the reference answer. Take as long as you need; the time per puzzle is recorded. Two practice puzzles with visible answers come first. Your alias, your answers and the time per puzzle are stored in a results sheet; nothing else is collected.</p>
     <label for="alias">Alias (letters, digits, - or _)</label>
     <input type="text" id="alias" maxlength="24" autocomplete="off" placeholder="e.g. ab12">
@@ -146,7 +146,7 @@ function renderPalette(){
     chip.addEventListener("click", () => { if (ST.sel !== null) setCell(ST.sel, token); });
     pal.appendChild(chip);
   });
-  $("legend").textContent = "Legend: " + DATA.legend.filter(l => l.token !== 15).map(l => `${l.token} ${l.name}`).join(" · ");
+  $("legend").textContent = "Legend: " + DATA.legend.filter(l => l.token !== 15).map(l => `${l.token} ${l.name}`).join(" | ");
 }
 function assignKeys(alias, index){
   const keys = [];

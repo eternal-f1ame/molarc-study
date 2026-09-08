@@ -33,7 +33,9 @@ h2{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;le
 .grid.big{--cell:clamp(16px, calc((100cqw - 24px) / 20), 30px)}
 .grid.editable .cell{cursor:pointer}
 .cell.selected{box-shadow:inset 0 0 0 3px var(--sel)}
-.pal{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.pal{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+.palgroup{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.palgroup h3{margin:0;min-width:120px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .chip{display:flex;align-items:center;gap:6px;padding:4px 8px 4px 4px;border:1px solid var(--line);border-radius:4px;background:var(--panel);font-size:13px;cursor:pointer}
 .chip .sw{width:18px;height:18px;border-radius:3px;border:1px solid rgba(0,0,0,.15)}
 .chip.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
@@ -143,16 +145,30 @@ function setCell(i, t){
   paintEdit();
 }
 function paintEdit(){ document.querySelectorAll("#edit-grid .cell").forEach(c => { const t = ST.grid[+c.dataset.i]; c.style.background = colorOf(t); c.style.color = inkFor(t); c.textContent = t ? t : ""; }); }
+const GROUPS = [
+  {name: "Elements", tokens: [2,3,4,5,6,7,8,9,10,11]},
+  {name: "Bonds", tokens: [12,13,14]},
+  {name: "Structure", tokens: [0,1]},
+  {name: "Markers", tokens: [16,21]},
+  {name: "Hydrogen counts", tokens: [17,18,19,20]},
+  {name: "Numbers", tokens: [22,23,24,25,26,27,28,29,30]},
+  {name: "Conditions", tokens: [31,32,33]},
+];
 function renderPalette(){
   const pal = $("palette"); pal.innerHTML = "";
-  DATA.legend.forEach(({token, name, color}) => {
-    if (token === 15) return;                       // the aromatic token is never used in answers
-    const chip = document.createElement("button"); chip.type = "button"; chip.className = "chip";
-    chip.innerHTML = `<span class="sw" style="background:${color}"></span><span class="n">${token}</span><span class="nm">${name}</span>`;
-    chip.addEventListener("click", () => { if (ST.sel !== null) setCell(ST.sel, token); });
-    pal.appendChild(chip);
+  GROUPS.forEach(({name, tokens}) => {
+    const row = document.createElement("div"); row.className = "palgroup";
+    const h = document.createElement("h3"); h.textContent = name; row.appendChild(h);
+    tokens.forEach(token => {
+      const l = DATA.legend[token]; if (!l) return;
+      const chip = document.createElement("button"); chip.type = "button"; chip.className = "chip";
+      chip.innerHTML = `<span class="sw" style="background:${l.color}"></span><span class="n">${token}</span><span class="nm">${l.name}</span>`;
+      chip.addEventListener("click", () => { if (ST.sel !== null) setCell(ST.sel, token); });
+      row.appendChild(chip);
+    });
+    pal.appendChild(row);
   });
-  $("legend").textContent = "Legend: " + DATA.legend.filter(l => l.token !== 15).map(l => `${l.token} ${l.name}`).join(" | ");
+  $("legend").textContent = GROUPS.map(g => g.name + ": " + g.tokens.map(t => `${t} ${DATA.legend[t].name}`).join(", ")).join("\n");
 }
 function assignKeys(alias, index){
   const keys = [];
